@@ -7,7 +7,7 @@ import unocss from '@unocss/eslint-config/flat'
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-    { ignores: ['src-tauri'] },
+    { ignores: ['src-tauri', 'dist'] },
     { files: ['**/*.{js,ts,vue}'] },
     { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
     pluginJs.configs.recommended,
@@ -33,9 +33,7 @@ export default [
                 html: {
                     void: 'always',
                     normal: 'never'
-                },
-                svg: 'always',
-                math: 'always'
+                }
             }],
             'vue/max-attributes-per-line': ['error', { singleline: 3, multiline: { max: 1 } }],
             'vue/component-definition-name-casing': ['error', 'PascalCase'],
