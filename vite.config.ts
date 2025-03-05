@@ -4,6 +4,7 @@ import UnoCSS from 'unocss/vite'
 import path from 'node:path'
 
 import Components from 'unplugin-vue-components/vite'
+import { PrimeVueResolver } from 'unplugin-vue-components/resolvers'
 import AutoImport from 'unplugin-auto-import/vite'
 
 const host = process.env.TAURI_DEV_HOST
@@ -21,13 +22,14 @@ export default defineConfig(() => {
         plugins: [
             vue(),
             UnoCSS(),
-            Components({
-                dts: './src/types/auto-import-components.d.ts'
-            }),
             AutoImport({
                 imports: ['vue', '@vueuse/core'],
                 dts: './src/types/auto-imports.d.ts',
                 dirs: ['./src/constants']
+            }),
+            Components({
+                dts: './src/types/auto-import-components.d.ts',
+                resolvers: [PrimeVueResolver({ prefix: 'P' })]
             })
         ],
         clearScreen: false,

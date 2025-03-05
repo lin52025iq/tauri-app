@@ -4,4 +4,19 @@ import App from './App.vue'
 import 'virtual:uno.css'
 import '@/styles/index.scss'
 
-createApp(App).mount('#app')
+import PrimeVue, { PrimeVueConfiguration } from 'primevue/config'
+import Aura from '@primeuix/themes/aura'
+
+const app = createApp(App)
+
+app.use(PrimeVue, {
+    theme: {
+        preset: Aura,
+        options: {
+            darkModeSelector: 'system',
+            prefix: 'pe'
+        }
+    }
+} as PrimeVueConfiguration)
+
+app.mount('#app')
