@@ -1,5 +1,5 @@
 import { defineConfig, presetMini, presetAttributify } from 'unocss'
 
 export default defineConfig({
-    presets: [presetMini(), presetAttributify()]
+    presets: [presetMini(), presetAttributify({ prefix: '', prefixedOnly: true })]
 })

@@ -5,7 +5,7 @@ const canUseTauriApi = Boolean(window.__TAURI_INTERNALS__)
 
 export async function greet(name: string) {
     if (!canUseTauriApi) {
-        return `greet from ${name}!`
+        return `greet from bowser to: ${name}!`
     }
     return await invoke('greet', { name }) as string
 }
