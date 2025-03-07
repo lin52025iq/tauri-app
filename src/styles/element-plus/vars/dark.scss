@@ -1,0 +1,31 @@
+/*
+- 需要修改 暗色模式下的变量时在下面 var.scss 中修改
+- 只能添加在 var.scss 标记了 !default 的变量
+*/
+// @forward "element-plus/theme-chalk/src/dark/var.scss" with (
+//     $colors: (
+//         "primary": (
+//             "base": blue
+//         )
+//     )
+// );
+
+@use "element-plus/theme-chalk/src/dark/css-vars.scss" as dark;
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+    z-index: 1;
+}
+::view-transition-new(root) {
+    z-index: 9999;
+}
+.dark::view-transition-old(root) {
+    z-index: 9999;
+}
+.dark::view-transition-new(root) {
+    z-index: 1;
+}

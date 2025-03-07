@@ -8,37 +8,40 @@ import unocss from '@unocss/eslint-config/flat'
 /** @type {import('eslint').Linter.Config[]} */
 export default [
     { ignores: ['src-tauri', 'dist'] },
-    { files: ['**/*.{js,ts,vue}'] },
+    { files: ['**/*.{js,jsx,ts,tsx,vue}'] },
     { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
-    pluginJs.configs.recommended,
-    ...tseslint.configs.recommended,
-    ...pluginVue.configs['flat/strongly-recommended'],
-    unocss,
-    { files: ['**/*.vue'], languageOptions: { parserOptions: { parser: tseslint.parser } } },
-    stylistic.configs.customize({
-        indent: 4,
-        commaDangle: 'never'
-    }),
-    {
-        rules: {
-            'vue/html-indent': ['error', 4],
-            'vue/multi-word-component-names': ['error', {
-                ignores: ['index']
-            }],
-            'vue/component-name-in-template-casing': ['error', 'PascalCase', {
-                registeredComponentsOnly: true,
-                ignores: []
-            }],
-            'vue/html-self-closing': ['error', {
-                html: {
-                    void: 'always',
-                    normal: 'never'
+    ...[...tseslint.configs.recommended,
+        pluginJs.configs.recommended,
+        {
+            rules: {
+                'no-undef': 'off',
+                'no-undef-init': 'error'
+            }
+        }],
+    ...[...pluginVue.configs['flat/strongly-recommended'],
+        {
+            files: ['**/*.vue'],
+            languageOptions: {
+                parserOptions: { parser: tseslint.parser,
+                    ecmaFeatures: { jsx: true }
                 }
-            }],
-            'vue/max-attributes-per-line': ['error', { singleline: 3, multiline: { max: 1 } }],
-            'vue/component-definition-name-casing': ['error', 'PascalCase'],
-            'no-undef': 'off',
-            'no-undef-init': 'error'
+            }
+        },
+        {
+            rules: {
+                'vue/html-indent': ['error', 4],
+                'vue/multi-word-component-names': ['error', { ignores: ['index'] }],
+                'vue/component-name-in-template-casing': ['error', 'PascalCase', { registeredComponentsOnly: false, ignores: ['/^el-/'] }],
+                'vue/html-self-closing': ['error', { html: { void: 'always', normal: 'never' } }],
+                'vue/max-attributes-per-line': ['error', { singleline: 3, multiline: { max: 1 } }],
+                'vue/component-definition-name-casing': ['error', 'PascalCase'],
+                'vue/singleline-html-element-content-newline': 'off'
+            }
+        }],
+    ...[stylistic.configs.customize({ indent: 4, commaDangle: 'never' }), {
+        rules: {
+            '@stylistic/brace-style': ['error', '1tbs', { allowSingleLine: true }]
         }
-    }
+    }],
+    unocss
 ]
