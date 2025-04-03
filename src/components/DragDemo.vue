@@ -14,6 +14,7 @@
                 file-name="示例文档.txt"
                 @error="onError"
             >
+                <el-button @click="textBlob = null">清除</el-button>
                 拖拽文本文件
             </BlobDraggable>
 
@@ -23,6 +24,7 @@
                 file-name="示例图片.png"
                 @error="onError"
             >
+                <el-button @click="imageBlob = null">清除</el-button>
                 拖拽图片文件
             </BlobDraggable>
 
@@ -32,6 +34,7 @@
                 file-name="示例音频.mp3"
                 @error="onError"
             >
+                <el-button @click="audioBlob = null">清除</el-button>
                 拖拽音频文件
             </BlobDraggable>
         </div>

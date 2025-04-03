@@ -1,18 +1,20 @@
 <template>
-    <div
-        ref="dragElement"
-        draggable="true"
-        @dragstart="handleDragStart"
-        @dragend="handleDragEnd"
-        class="draggable-item"
-    >
-        <slot></slot>
+    <div v-loading="loading">
+        <div
+            ref="dragElement"
+            draggable="true"
+            @dragstart="handleDragStart"
+            @dragend="handleDragEnd"
+            class="draggable-item"
+        >
+            <slot></slot>
+            <div>path: {{ tempPath }}</div>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { createTempFile, handleDrag } from '@/tauri-apps'
+import { createTempFile, deleteFile, handleDrag } from '@/tauri-apps'
 
 const props = defineProps({
     blob: {
@@ -28,10 +30,22 @@ const props = defineProps({
 const emit = defineEmits(['start', 'end', 'error'])
 
 const tempPath = ref<string>()
-onMounted(async () => {
+
+const loading = ref(false)
+watchImmediate([() => props.blob, () => props.fileName], async () => {
+    onWatcherCleanup(() => {
+        if (tempPath.value) {
+            deleteFile(tempPath.value)
+        }
+    })
+
+    loading.value = true
     const arrayBuffer = await props.blob.arrayBuffer()
     const data = new Uint8Array(arrayBuffer)
     tempPath.value = await createTempFile(props.fileName, data)
+
+    await new Promise(resolve => setTimeout(resolve, 100))
+    loading.value = false
 })
 
 const handleDragStart = async () => {
