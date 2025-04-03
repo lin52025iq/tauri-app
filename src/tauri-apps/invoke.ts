@@ -1,11 +1,13 @@
 import { invoke } from '@tauri-apps/api/core'
+import { canUseTauriApi } from './index'
 
-/** 是否可以使用 tauri 的 api 方法 */
-const canUseTauriApi = Boolean(window.__TAURI_INTERNALS__)
+/** 创建临时文件
+ * @param name 创建文件名
+ * @param data 文件 blob
+ * @return 返回创建的临时文件路径
+ */
+export async function createTempFile(name: string, data: Uint8Array) {
+    if (!canUseTauriApi) return
 
-export async function greet(name: string) {
-    if (!canUseTauriApi) {
-        return `greet from ${name}!`
-    }
-    return await invoke('greet', { name }) as string
+    return await invoke('create_and_append_file', { name, data }) as string
 }

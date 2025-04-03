@@ -8,6 +8,8 @@ import Components from 'unplugin-vue-components/vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
+import { visualizer } from 'rollup-plugin-visualizer'
+
 const host = process.env.TAURI_DEV_HOST
 
 export default defineConfig(() => {
@@ -65,7 +67,17 @@ export default defineConfig(() => {
             // 在 debug 构建中不使用 minify
             minify: !process.env.TAURI_ENV_DEBUG ? 'esbuild' as const : false,
             // 在 debug 构建中生成 sourcemap
-            sourcemap: !!process.env.TAURI_ENV_DEBUG
+            sourcemap: !!process.env.TAURI_ENV_DEBUG,
+            rollupOptions: {
+                plugins: [
+                    visualizer({
+                        open: false, // 直接在浏览器中打开分析报告
+                        filename: 'stats.html', // 输出文件的名称
+                        gzipSize: true, // 显示gzip后的大小
+                        brotliSize: true // 显示brotli压缩后的大小
+                    })
+                ]
+            }
         }
     })
 })
