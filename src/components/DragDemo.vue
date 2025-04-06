@@ -85,7 +85,7 @@ const createImageBlob = async () => {
 
 const createAudioBlob = async () => {
     /* @vite-ignore */
-    const audioUrl = new URL('@/assets/示例音频.mp3', import.meta.url)
+    const audioUrl = new URL('@/assets/demo.mp3', import.meta.url)
     const response = await fetch(audioUrl)
     if (!response.ok) {
         throw new Error(`HTTP错误! 状态: ${response.status}`)
