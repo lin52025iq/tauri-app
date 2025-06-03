@@ -26,3 +26,11 @@ tauri-plugin-fs = "2"
 tauri-plugin-os = "2"
 tauri-plugin-drag = "2.1.0"
 
+[profile.dev]
+incremental = true
+opt-level = 0
+debug = true
+
+[profile.dev.package."*"]
+opt-level = 1
+debug = false

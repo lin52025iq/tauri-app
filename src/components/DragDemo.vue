@@ -84,7 +84,6 @@ const createImageBlob = async () => {
 }
 
 const createAudioBlob = async () => {
-    /* @vite-ignore */
     const audioUrl = new URL('@/assets/demo.mp3', import.meta.url)
     const response = await fetch(audioUrl)
     if (!response.ok) {

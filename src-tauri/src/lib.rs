@@ -32,7 +32,7 @@ fn create_and_append_file(
         .map_err(|e| e.to_string())?;
 
     // Write data in chunks to support progress reporting
-    let chunk_size = 1024 * 1024; // 1MB chunks
+    let chunk_size = 1024 * 1024; // 1 MB chunks
     let mut written = 0;
     let total = data.len();
 
