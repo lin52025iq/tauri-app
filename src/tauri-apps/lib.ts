@@ -4,8 +4,9 @@ import { resolveResource } from '@tauri-apps/api/path'
 
 let IconImage: string = ''
 
-async function loadIcon() {
-    if (IconImage) {
+/** 加载托拽的图标 */
+export async function loadIcon() {
+    if (IconImage || !canUseTauriApi) {
         return
     }
 
@@ -13,17 +14,16 @@ async function loadIcon() {
     IconImage = path
 }
 
-loadIcon()
-
 /** 处理拖拽 */
 export async function handleDrag(item: Options['item'], onEvent?: Parameters<typeof startDrag>[1]) {
     if (!canUseTauriApi) return
+
+    await loadIcon()
 
     await startDrag({
         item,
         icon: IconImage
     }, (result) => {
-        console.log(result)
         if (typeof onEvent === 'function') {
             onEvent(result)
         }

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { createTempFile, deleteFile, handleDrag } from '@/tauri-apps'
+import { createTempFile, deleteFile, handleDrag, loadIcon } from '@/tauri-apps'
 
 const props = defineProps({
     blob: {
@@ -46,6 +46,10 @@ watchImmediate([() => props.blob, () => props.fileName], async () => {
 
     await new Promise(resolve => setTimeout(resolve, 100))
     loading.value = false
+})
+
+onMounted(async () => {
+    await loadIcon()
 })
 
 const handleDragStart = async () => {

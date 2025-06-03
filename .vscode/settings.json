@@ -13,5 +13,11 @@
     "[rust]": {
         "editor.defaultFormatter": "rust-lang.rust-analyzer"
     },
-    "rust-analyzer.cargo.targetDir": "target/analyzer"
+    "rust-analyzer.cargo.targetDir": "target/analyzer",
+    "[toml]": {
+        "editor.defaultFormatter": "tamasfe.even-better-toml"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    }
 }
