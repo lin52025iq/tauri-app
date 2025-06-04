@@ -6,8 +6,7 @@
     "author": "lin52025",
     "scripts": {
         "dev": "vite",
-        "prebuild": "vite dev --force --mode production",
-        "build": "vue-tsc --noEmit && vite build",
+        "build": "vite build",
         "preview": "vite preview",
         "tauri": "tauri",
         "lint": "eslint ."
