@@ -1,0 +1,16 @@
+/*
+- 完整变量列表: https://github.com/element-plus/element-plus/blob/dev/packages/theme-chalk/src/common/var.scss
+- 仅在 vite.config.ts 中引入做预处理覆盖原有样式
+*/
+
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+    $colors: (
+        "primary": (
+            // https://www.zhongguose.com/#walv
+            "base": #45b787
+        )
+    )
+);
+
+/* 引入暗色模式的样式 */
+@use "./dark.scss";

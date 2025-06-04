@@ -26,3 +26,4 @@ dist-ssr
 
 # auto import
 auto-*.d.ts
+stats.html
