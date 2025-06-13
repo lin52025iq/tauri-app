@@ -24,7 +24,7 @@ importers:
         specifier: ^2.2.1
         version: 2.2.1
       '@tauri-apps/plugin-updater':
-        specifier: ~2.7.1
+        specifier: ^2.7.1
         version: 2.7.1
       '@unocss/reset':
         specifier: ^66.1.3
