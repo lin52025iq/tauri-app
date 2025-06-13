@@ -20,12 +20,12 @@ jobs:
         include:
           - platform: "macos-latest"
             args: "--target aarch64-apple-darwin"
-          - platform: 'macos-latest'
-            args: '--target x86_64-apple-darwin'
-          - platform: "ubuntu-24.04"
-            args: ""
-          - platform: "windows-latest"
-            args: ""
+          # - platform: 'macos-latest'
+          #   args: '--target x86_64-apple-darwin'
+          # - platform: "ubuntu-24.04"
+          #   args: ""
+          # - platform: "windows-latest"
+          #   args: ""
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -67,13 +67,26 @@ jobs:
           prerelease: false
           args: ${{ matrix.args }}
 
-  # 构建后推送 updater 文件
+      - name: Upload latest.json as artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: updater-artifact
+          path: src-tauri/target/release/bundle/updater/latest.json
+          if-no-files-found: error
+
   push-updater:
     name: Push updater file to updater branch
     needs: publish-tauri
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
+      
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: updater-artifact
+          path: src-tauri/updater/
 
       - name: Setup Git config
         run: |
@@ -84,11 +97,6 @@ jobs:
         run: |
           git fetch origin updater || true
           git checkout -B updater origin/updater || git checkout -b updater
-
-      - name: Copy latest.json from previous job
-        run: |
-          mkdir -p src-tauri/updater/
-          cp src-tauri/target/release/bundle/updater/latest.json src-tauri/updater/latest.json || echo "latest.json not found"
 
       - name: Commit and push updater file
         run: |
