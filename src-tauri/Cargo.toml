@@ -1,6 +1,6 @@
 [package]
 name = "tauri-app"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Tauri App"
 authors = ["lin52025"]
 edition = "2021"
@@ -34,3 +34,6 @@ debug = true
 [profile.dev.package."*"]
 opt-level = 1
 debug = false
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-updater = "2"

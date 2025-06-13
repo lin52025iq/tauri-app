@@ -20,7 +20,7 @@ jobs:
         include:
           - platform: "macos-latest"
             args: "--target aarch64-apple-darwin"
-          - platform: 'macos-latest' # for Intel based macs.
+          - platform: 'macos-latest'
             args: '--target x86_64-apple-darwin'
           - platform: "ubuntu-24.04"
             args: ""
@@ -46,7 +46,6 @@ jobs:
       - name: install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
           targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: install dependencies (ubuntu only)
@@ -58,10 +57,41 @@ jobs:
       - uses: tauri-apps/tauri-action@action-v0.5.20
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
-          tagName: v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          tagName: v__VERSION__
           releaseName: "v__VERSION__"
           releaseBody: "Note: macOS builds are not signed so in order to run the app, after moving the app to Applications folder you need to run `xattr -c /Applications/tauri-app.app` in the terminal. (See tauri-apps/tauri-action#919)."
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
+
+  # 构建后推送 updater 文件
+  push-updater:
+    name: Push updater file to updater branch
+    needs: publish-tauri
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.2.2
+
+      - name: Setup Git config
+        run: |
+          git config user.name "lin52025iq"
+          git config user.email "lin52025iq@github.com"
+
+      - name: Fetch updater branch
+        run: |
+          git fetch origin updater || true
+          git checkout -B updater origin/updater || git checkout -b updater
+
+      - name: Copy latest.json from previous job
+        run: |
+          mkdir -p src-tauri/updater/
+          cp src-tauri/target/release/bundle/updater/latest.json src-tauri/updater/latest.json || echo "latest.json not found"
+
+      - name: Commit and push updater file
+        run: |
+          git add src-tauri/updater/latest.json
+          git commit -m "chore: update latest.json for ${{ github.ref_name }}" || echo "No changes to commit"
+          git push origin HEAD:updater

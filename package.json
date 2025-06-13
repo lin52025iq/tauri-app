@@ -1,7 +1,7 @@
 {
     "name": "tauri-app",
     "private": true,
-    "version": "0.1.0",
+    "version": "0.1.1",
     "type": "module",
     "author": "lin52025",
     "scripts": {
@@ -18,6 +18,7 @@
         "@tauri-apps/plugin-fs": "^2.3.0",
         "@tauri-apps/plugin-opener": "^2.2.7",
         "@tauri-apps/plugin-os": "^2.2.1",
+        "@tauri-apps/plugin-updater": "^2.7.1",
         "@unocss/reset": "^66.1.3",
         "@vueuse/core": "^13.3.0",
         "element-plus": "^2.9.11",

@@ -12,6 +12,7 @@
     "fs:allow-create",
     "fs:allow-resource-read-recursive",
     "os:default",
-    "drag:default"
+    "drag:default",
+    "updater:default"
   ]
 }
