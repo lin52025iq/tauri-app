@@ -19,13 +19,17 @@ jobs:
       matrix:
         include:
           - platform: "macos-latest"
-            args: "--target aarch64-apple-darwin"
-          # - platform: 'macos-latest'
-          #   args: '--target x86_64-apple-darwin'
-          # - platform: "ubuntu-24.04"
-          #   args: ""
-          # - platform: "windows-latest"
-          #   args: ""
+            arch: "aarch64-apple-darwin"
+            generateUpdater: true
+          - platform: "macos-latest"
+            arch: "x86_64-apple-darwin"
+            generateUpdater: false
+          - platform: "ubuntu-24.04"
+            arch: ""
+            generateUpdater: false
+          - platform: "windows-latest"
+            arch: ""
+            generateUpdater: false
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -43,10 +47,10 @@ jobs:
           node-version: 22
           cache: "pnpm"
 
-      - name: install Rust stable
+      - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+          targets: ${{ matrix.arch != '' && matrix.arch || '' }}
 
       - name: install dependencies (ubuntu only)
         if: matrix.platform == 'ubuntu-24.04'
@@ -62,17 +66,18 @@ jobs:
         with:
           tagName: v__VERSION__
           releaseName: "v__VERSION__"
-          releaseBody: "Note: macOS builds are not signed so in order to run the app, after moving the app to Applications folder you need to run `xattr -c /Applications/tauri-app.app` in the terminal. (See tauri-apps/tauri-action#919)."
+          releaseBody: "Note: macOS builds are not signed. To run the app, after moving it to Applications folder, run: `xattr -c /Applications/tauri-app.app`"
           releaseDraft: false
           prerelease: false
-          args: ${{ matrix.args }}
+          args: ${{ matrix.arch != '' && format('--target {0}', matrix.arch) || '' }}
 
       - name: Upload latest.json as artifact
-        if: success()
+        if: matrix.generateUpdater == true
         uses: actions/upload-artifact@v4
         with:
           name: updater-artifact
-          path: src-tauri/target/release/bundle/updater/latest.json
+          path: |
+            src-tauri/target/**/bundle/updater/latest.json
           if-no-files-found: error
 
   push-updater:
@@ -81,8 +86,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4.2.2
-      
-      - name: Download artifact
+
+      - name: Download latest.json artifact
         uses: actions/download-artifact@v4
         with:
           name: updater-artifact
@@ -98,7 +103,7 @@ jobs:
           git fetch origin updater || true
           git checkout -B updater origin/updater || git checkout -b updater
 
-      - name: Commit and push updater file
+      - name: Commit and push latest.json
         run: |
           git add src-tauri/updater/latest.json
           git commit -m "chore: update latest.json for ${{ github.ref_name }}" || echo "No changes to commit"
